@@ -156,4 +156,50 @@ class ExecutorTest {
             )
         )
     }
+
+    @Test
+    fun lsSrcDir() {
+        assertEquals(
+            "main\ntest", executor.runCommands(
+                listOf(
+                    Ls(listOf("src"))
+                )
+            )
+        )
+    }
+
+    @Test
+    fun cdDirectoryWhichDoesNotExist() {
+        assertEquals(
+            "cd: srcdsdsds: No such file or directory", executor.runCommands(
+                listOf(
+                    Cd(listOf("srcdsdsds"))
+                )
+            )
+        )
+    }
+
+    @Test
+    fun cdDirectoryNoArgs() {
+        assertEquals(
+            "", executor.runCommands(
+                listOf(
+                    Cd(emptyList())
+                )
+            )
+        )
+    }
+
+    @Test
+    fun cdAndLs() {
+        assertEquals(
+            "main\n" +
+                    "test", executor.runCommands(
+                listOf(
+                    Cd(listOf("src")),
+                    Ls(emptyList())
+                )
+            )
+        )
+    }
 }
