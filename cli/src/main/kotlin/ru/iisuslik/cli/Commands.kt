@@ -47,6 +47,8 @@ interface Command {
                 "wc" -> Wc(args)
                 "cat" -> Cat(args)
                 "grep" -> Grep(args)
+                "ls" -> Ls(args)
+                "cd" -> Cd(args)
                 // Real bash doesn't care too if we pass any args to pwd or exit
                 "pwd" -> Pwd
                 "exit" -> Exit
@@ -119,6 +121,28 @@ data class Grep(val args: List<String>) : Command {
             regexString.toRegex()
         }
 
+    }
+}
+
+data class Ls(val args: List<String>) : Command {
+    override fun execute(input: String): String {
+        return if (args.isEmpty() && input.isEmpty()) {
+            ls(listOf(pwd()))
+        } else if (args.isEmpty()) {
+            ls(listOf(input))
+        } else {
+            ls(args)  // because ls . . will apply ls to . twice
+        }
+    }
+}
+
+data class Cd(val args: List<String>) : Command {
+    override fun execute(input: String): String {
+        return if (args.isEmpty()) {
+            cd(System.getProperty("user.home"))  // as in bash
+        } else {
+            cd(args[0])  // because cd .. .. = cd .. and etc.
+        }
     }
 }
 

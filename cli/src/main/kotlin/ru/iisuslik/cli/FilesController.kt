@@ -104,3 +104,27 @@ fun grepFiles(fileNames: List<String>, regex: Regex, linesCount: Int): String {
     }
     return stringBuilder.toString()
 }
+
+fun ls(fileNames: List<String>): String {
+    return fileNames.joinToString(System.getProperty("line.separator")) {
+        val dir = File(it)
+        if (dir.exists() && dir.isDirectory) {
+            dir.listFiles()
+                .map { file -> file.name }
+                .sorted()
+                .joinToString(System.getProperty("line.separator"))
+        } else {
+            "ls: cannot access $it: No such file or directory"
+        }
+    }
+}
+
+fun cd(directory: String): String {
+    val dir = File(directory).absoluteFile
+    return if (dir.exists() && dir.isDirectory) {
+        System.setProperty("user.dir", dir.absolutePath)
+        ""
+    } else {
+        "cd: $directory: No such file or directory"
+    }
+}
